@@ -6,11 +6,13 @@ Motor::Motor(int enable, int IN1, int IN2) {
     Motor::setupMotor(enable, IN1, IN2);
 }
 
-Motor::Motor(int enable, int IN1, int IN2, int encoder1, int encoder2, EncoderInterruptHandler handler) {
+Motor::Motor(int enable, int IN1, int IN2, int encoder1) {
     wiringPiSetupPhys();
     this->hasEncoder = true;
     Motor::setupMotor(enable, IN1, IN2);
-    Motor::setupEncoder(encoder1, encoder2, handler);
+    Motor::setupEncoder(encoder1);
+
+    pulseThread = std::thread(&Motor::pulseWatcher, this);
 }
 
 Motor::~Motor() {
@@ -21,6 +23,9 @@ Motor::~Motor() {
     if (hasEncoder) {
         digitalWrite(encoder1, LOW);
         digitalWrite(encoder2, LOW);
+
+        pauseThread = true;
+        pulseThread.join();
     }
 }
 
@@ -48,29 +53,28 @@ void Motor::setupMotor(int enable, int IN1, int IN2) {
     pinMode(IN2, OUTPUT);
 }
 
-void Motor::setupEncoder(int encoder1, int encoder2, EncoderInterruptHandler handler) {
+void Motor::setupEncoder(int encoder1) {
     this->encoder1 = encoder1;
-    this->encoder2 = encoder2;
     this->pulseCount = 0;
 
     pinMode(encoder1, INPUT);
-    pinMode(encoder2, INPUT);
-
-    pullUpDnControl(encoder1, PUD_UP);
-    pullUpDnControl(encoder2, PUD_UP);
-
-    wiringPiISR(encoder1, INT_EDGE_BOTH, handler);
 }
 
-void Motor::handleInterrupt() {
-    bool state = digitalRead(encoder1);
-
-    if (state != lastState) {
-        pulseCount++;
-        lastState = state;
+void Motor::pulseWatcher() {
+    while (!pauseThread) {
+        int currentState = digitalRead(encoder1);
+        if (currentState != lastState && currentState == 1) {
+            this->pulseCount++;
+        }
+        lastState = currentState;
+        delayMicroseconds(100);
     }
 }
 
 int Motor::getPulseCount() {
     return pulseCount;
+}
+
+void Motor::resetPulseCount() {
+    this->pulseCount = 0;
 }

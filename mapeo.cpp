@@ -3,29 +3,17 @@
 #include <unistd.h>
 #include <wiringPi.h>
 
-#define MAX_MOTORS 2
-Motor* motors[MAX_MOTORS] = {nullptr, nullptr};
-
-void encoderInterrupt(int index) {
-    if (motors[index] != nullptr) {
-        motors[index]->handleInterrupt();
-    }
-}
-
-void encoderInterrupt0() {
-    encoderInterrupt(0);
-}
+using namespace std;
 
 int main() {
-    Motor motor1(7, 35, 37, 22, 24 ,encoderInterrupt0);
-    motors[0] = &motor1;
-    Motor motor2(32, 38, 36);
-    motors[1] = &motor2;
+    Motor motor1(7, 35, 37, 22);
+    Motor motor2(32, 38, 36, 26);
 
     // Mapeo 1
     int maxSpeed = 1000;
 
     for (int speed = 0; speed <= maxSpeed; speed++) {
+        cout << "Pulses 1: " << motor1.getPulseCount() << " Pulses 2: " << motor2.getPulseCount() << endl;
         motor1.setSpeed(speed);
         motor2.setSpeed(speed);
     }

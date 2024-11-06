@@ -1,26 +1,29 @@
 #ifndef MOTOR_HPP
 #define MOTOR_HPP
 #include <wiringPi.h>
-
-typedef void (*EncoderInterruptHandler)();
+#include <thread>
+#include <iostream>
 
 class Motor {
 private:
     int enable, IN1, IN2;
     int encoder1, encoder2;
     bool hasEncoder;
-    bool lastState;
+    int lastState;
     int pulseCount;
-    EncoderInterruptHandler encoderHandler;
+    bool pauseThread;
+    std::thread pulseThread;
+    
 
     void setupMotor(int ENA, int IN1, int IN2);
-    void setupEncoder(int encoder1, int encoder2, EncoderInterruptHandler handler);
+    void setupEncoder(int encoder1);
+    void pulseWatcher();
 public:
     Motor(int ENA, int IN1, int IN2);
-    Motor(int ENA, int IN1, int IN2, int encoder1, int encoder2, EncoderInterruptHandler handler);
+    Motor(int ENA, int IN1, int IN2, int encoder1);
     void setSpeed(int speed);
     int getPulseCount();
-    void handleInterrupt(); 
+    void resetPulseCount();
     ~Motor();
 };
 
