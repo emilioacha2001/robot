@@ -67,7 +67,7 @@ void Motor::pulseWatcher() {
             this->pulseCount++;
         }
         lastState = currentState;
-        delayMicroseconds(100);
+        delayMicroseconds(10);
     }
 }
 
