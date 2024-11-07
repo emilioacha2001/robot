@@ -30,17 +30,19 @@ Motor::~Motor() {
 }
 
 void Motor::setSpeed(int speed) {
-    digitalWrite(IN1, HIGH);
-    digitalWrite(IN2, LOW);
-
-    if (speed > 1000) {
-        pwmWrite(enable, 1000);
-    } else if (speed <= 0) {
+    if (speed < 0) {
+        speed = -speed;
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, HIGH);
+    } else if (speed == 0) {
         digitalWrite(IN1, LOW);
         digitalWrite(IN2, LOW);
     } else {
-        pwmWrite(enable, speed);
+        digitalWrite(IN1, HIGH);
+        digitalWrite(IN2, LOW);
     }
+
+    pwmWrite(enable, speed);
 }
 
 void Motor::setupMotor(int enable, int IN1, int IN2) {
