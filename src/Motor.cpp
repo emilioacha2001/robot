@@ -33,14 +33,18 @@ void Motor::setSpeed(int speed) {
     digitalWrite(IN1, HIGH);
     digitalWrite(IN2, LOW);
 
-    if (speed > 1000) {
-        pwmWrite(enable, 1000);
-    } else if (speed <= 0) {
+    if (speed > 1024) {
+        speed = 1024;
+    } else if (speed == 0) {
         digitalWrite(IN1, LOW);
         digitalWrite(IN2, LOW);
-    } else {
-        pwmWrite(enable, speed);
+    } else if (speed < 0) {
+        digitalWrite(IN1, LOW);
+        digitalWrite(IN2, HIGH);
+        speed = speed * -1;
     }
+    
+    pwmWrite(enable, speed);
 }
 
 void Motor::setupMotor(int enable, int IN1, int IN2) {
@@ -67,7 +71,7 @@ void Motor::pulseWatcher() {
             this->pulseCount++;
         }
         lastState = currentState;
-        delayMicroseconds(100);
+        delayMicroseconds(10);
     }
 }
 

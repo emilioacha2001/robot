@@ -7,8 +7,8 @@ int main() {
     Motor motor1(7, 35, 37);
     Motor motor2(32, 38, 36);
 
-    motor1.setSpeed(1000);
-    motor2.setSpeed(1000);
+    motor1.setSpeed(-1024);
+    motor2.setSpeed(-1024);
 
     sleep(3);
     return 0;

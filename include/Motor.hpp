@@ -14,7 +14,6 @@ private:
     bool pauseThread;
     std::thread pulseThread;
     
-
     void setupMotor(int ENA, int IN1, int IN2);
     void setupEncoder(int encoder1);
     void pulseWatcher();
