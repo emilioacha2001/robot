@@ -3,6 +3,7 @@
 #include <wiringPi.h>
 #include <thread>
 #include <chrono>
+#include <cmath>
 #include <iostream>
 
 class Motor {
@@ -11,8 +12,6 @@ private:
     int encoder1, encoder2;
     bool hasEncoder;
     int lastState;
-    int pulseCount;
-    int pulsesPerSecond;
     bool pauseThread;
     std::thread pulseThread;
 
@@ -20,12 +19,21 @@ private:
     void setupEncoder(int encoder1);
     void pulseWatcher();
 public:
+    int pulseCount;
+    int pulsesPerSecond;
+    float encoderResolution = 341.2;
+    float gearRatio = 1/34;
+    float diameter = 0.1;
+    float wheelCircumference = diameter * M_PI;
+    float travelDistance;
     Motor(int ENA, int IN1, int IN2);
     Motor(int ENA, int IN1, int IN2, int encoder1);
     void setSpeed(int speed);
     int getPulseCount();
     int getPulsesPerSecond();
+    float getTravelDistance();
     void resetPulseCount();
+    void resetTravelDistance();
     ~Motor();
 };
 

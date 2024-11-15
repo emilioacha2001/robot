@@ -86,6 +86,8 @@ void Motor::pulseWatcher() {
             pulses = 0;
             start = currentTime;
         }
+
+        this->travelDistance = (this->pulseCount / encoderResolution) * wheelCircumference;
     }
 }
 
@@ -95,6 +97,14 @@ int Motor::getPulseCount() {
 
 int Motor::getPulsesPerSecond() {
     return pulsesPerSecond;
+}
+
+float Motor::getTravelDistance() {
+    return travelDistance;
+}
+
+void Motor::resetTravelDistance() {
+    this->travelDistance = 0;
 }
 
 void Motor::resetPulseCount() {

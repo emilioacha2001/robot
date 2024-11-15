@@ -12,13 +12,13 @@ int main() {
     motor1.setSpeed(-1024);
     motor2.setSpeed(-1024);
 
-    while (true) {
-        motor1.setSpeed(700);
-        motor2.setSpeed(700);
+    // while (true) {
+    //     motor1.setSpeed(700);
+    //     motor2.setSpeed(700);
 
-        cout << "Pulses1: " << motor1.getPulseCount() << " Pulses2: " << motor2.getPulseCount() << endl;
-        cout << "Speed1: " << motor1.getPulsesPerSecond() << " Speed2: " << motor2.getPulsesPerSecond() << endl;
-    }
+    //     cout << "Pulses1: " << motor1.getPulseCount() << " Pulses2: " << motor2.getPulseCount() << endl;
+    //     cout << "Speed1: " << motor1.getPulsesPerSecond() << " Speed2: " << motor2.getPulsesPerSecond() << endl;
+    // }
     // sleep(5);
     return 0;
 }
