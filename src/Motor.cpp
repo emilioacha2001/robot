@@ -65,18 +65,36 @@ void Motor::setupEncoder(int encoder1) {
 }
 
 void Motor::pulseWatcher() {
+    std::chrono::duration<float> sampleTime(1);
+    auto start = std::chrono::high_resolution_clock::now();
+    auto currentTime = std::chrono::high_resolution_clock::now();
+    int pulses = 0;
+    int lastState = digitalRead(encoder1);
+
     while (!pauseThread) {
         int currentState = digitalRead(encoder1);
         if (currentState != lastState && currentState == 1) {
             this->pulseCount++;
+            pulses++;
         }
         lastState = currentState;
         delayMicroseconds(10);
+
+        currentTime = std::chrono::high_resolution_clock::now();
+        if (currentTime - start >= sampleTime) {
+            this->pulsesPerSecond = pulses;
+            pulses = 0;
+            start = currentTime;
+        }
     }
 }
 
 int Motor::getPulseCount() {
     return pulseCount;
+}
+
+int Motor::getPulsesPerSecond() {
+    return pulsesPerSecond;
 }
 
 void Motor::resetPulseCount() {
