@@ -1,10 +1,8 @@
 #include <iostream>
 #include <armadillo>
-#include <sciplot/sciplot.hpp>
 
 using namespace std;
 using namespace arma;
-using namespace sciplot;
 
 int main(int argc, char *argv[]) {
     mat D, A;
@@ -20,20 +18,22 @@ int main(int argc, char *argv[]) {
         exit(0);
     }
 
+    D.swap_cols(0, 1);
+
     A.zeros(g, g);
     y.zeros(g);
 
     // aqui se cambia accu(D.col(x)) de acuerdo a la columna que se quiera para el motor x
     for (int i = 0; i < g; i++) {
         for (int j = 0; j < g; j++)
-            A(i, j) = accu(pow(D.col(0), (i + j)));
-        y(i) = accu(D.col(1) % pow(D.col(3), i));
+            A(i, j) = accu(arma::pow(D.col(0), (i + j)));
+        y(i) = accu(D.col(1) % arma::pow(D.col(0), i));
     }
 
     coeficientes = inv(A) * y;
     cout << "Coeficientes del regresor: " << coeficientes.t() << endl;
 
-    ofstream outFile("regresores/mapeo3_simple_m1_tiempo.txt");
+    ofstream outFile("m_config/m1_regresor_inversor.txt");
     if (!outFile) {
         cerr << "Error al abrir el archivo para escritura\n";
         return 1;
@@ -43,11 +43,11 @@ int main(int argc, char *argv[]) {
     vec y_pred(x.n_elem, fill::zeros);
 
     for (size_t i = 0; i < g; i++) {
-        y_pred += coeficientes(i) * pow(x, i);
+        y_pred += coeficientes(i) * arma::pow(x, i);
     }
 
     for (size_t i = 0; i < D.n_rows; i++) {
-        outFile << D(i, 3) << " " << D(i, 1) << " NaN\n"; // Original data
+        outFile << D(i, 0) << " " << D(i, 1) << " NaN\n"; // Original data
     }
     for (size_t i = 0; i < x.n_elem; i++) {
         outFile << x(i) << " NaN " << y_pred(i) << "\n"; // Polynomial fit
@@ -64,4 +64,4 @@ int main(int argc, char *argv[]) {
     return 0;
 }
 
-// CompileOptions: -std=c++17 -O1 -larmadillo -lsciplot
+// CompileOptions: -std=c++17 -O1 -larmadillo
