@@ -91,6 +91,34 @@ void Motor::pulseWatcher() {
     }
 }
 
+vector<double> Motor::coefFile(string filename) {
+    std::vector<double> coef;
+    std::ifstream file(filename);
+    if (!file.is_open()) {
+        std::cout << "Error: File not found" << std::endl;
+        return coef;
+    }
+
+    std::string line;
+    while (getline(file, line)) coef.push_back(stol(line));
+    file.close();
+    
+    return coef;
+}
+
+double Motor::getPWMFromSpeed(double speed, bool isRadians = true) {
+    if (isRadians) {
+        speed = speed * this->gearRatio * this->encoderResolution / (2 * M_PI);
+    }
+
+    double pwm = this->coefDeltaSpeed[0];
+    for (int i = 1; i < this->coefSpeedDelta.size(); i++) {
+        pwm += this->coefDeltaSpeed[i] * pow(speed, i);
+    }
+    
+    return pwm;
+}
+
 int Motor::getPulseCount() {
     return pulseCount;
 }
