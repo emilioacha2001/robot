@@ -60,6 +60,7 @@
         "complex": "cpp",
         "condition_variable": "cpp",
         "cstring": "cpp",
-        "mutex": "cpp"
+        "mutex": "cpp",
+        "format": "cpp"
     }
 }
