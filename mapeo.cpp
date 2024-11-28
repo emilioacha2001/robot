@@ -12,11 +12,10 @@
 
 using namespace std;
 using namespace sciplot;
-
 int main() {
     Motor motor1(7, 35, 37, 22);
     Motor motor2(32, 38, 36, 26);
-    motor1.setSpeed(0); motor2.setSpeed(1);
+    motor1.setSpeed(0); motor2.setSpeed(0);
     auto start = chrono::high_resolution_clock::now();
     auto currentTime = chrono::high_resolution_clock::now();
 
